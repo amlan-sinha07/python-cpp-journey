@@ -2,6 +2,8 @@
 #include <vector>
 #include <string>
 #include <numeric> 
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -46,6 +48,22 @@ class Student: public Person{
         }
         cout<<"Average "<<get_average()<<"\n----------\n";
     }
+    void save_to_file() {
+        ofstream file("student.txt", ios::app);
+        if (!file){
+            cout<<"error opening file"<<endl;
+            return;
+        }
+        file<<name<<" , "<<age<<" , "<<grade<<endl;
+
+        for (size_t i=0;i<marks.size();++i){
+            file<<subjects[i]<<" -> "<<marks[i]<<endl;
+        }
+
+        file<<"average: "<<get_average()<<endl;
+        file.close();
+    }
+
 };
 class Teacher: public Person{
     private:
@@ -78,6 +96,29 @@ class Teacher: public Person{
         cout<<"average "<<class_average()<<endl;
     }
 };
+void load_students_from_files(){
+    ifstream file("student.txt");
+    if (!file){
+        cout<<"error opening file"<<endl;
+        return;
+    }
+    string line;
+    while (getline(file,line)){
+        stringstream ss(line);
+        string name,age_str,grade;
+        getline(ss,name,',');
+        getline(ss,age_str,',');
+        getline(ss,grade,',');
+        if (!age_str.empty() && age_str.find_first_not_of("0123456789")==string::npos){
+            int age=stoi(age_str);
+        cout<<"loaded "<<"("<<age<<")"<<" grade "<<grade<<endl;
+        }
+        else{
+            cout<<"[skip the unseperable part: "<<line<<"]"<<endl;
+        }
+    }
+file.close();
+}
 int main(){
     Student s1("Amlan",19,"A");
     Student s2("Riya",17,"A");
@@ -92,5 +133,9 @@ int main(){
     t1.add_student(&s2);
     t1.print_class();
     s1.print_report();
+    s1.save_to_file();
+    s2.save_to_file();
+    load_students_from_files();
+    
     return 0;
 }
