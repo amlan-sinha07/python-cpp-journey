@@ -1,8 +1,8 @@
 #include <iostream>
 using namespace std;
 
-void double_value(int* n){
-    *n *= 2;
+void double_value(int* value){
+    *value *= 2;
 }
 int main(){
     int x=10;

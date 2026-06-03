@@ -1,16 +1,2 @@
-Amlan , 19 , A
-physics -> 92
-maths -> 88
-average: 90
-Riya , 17 , A
-physics -> 90
-maths -> 86
-average: 88
-Amlan , 19 , A
-physics -> 92
-maths -> 88
-average: 90
-Riya , 17 , A
-physics -> 90
-maths -> 86
-average: 88
+Amlan,19,A
+Riya,17,A

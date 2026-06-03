@@ -4,6 +4,7 @@
 #include <numeric> 
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -11,8 +12,13 @@ class Person{
     protected:
     string name;
     int age;
+    
     public:
+    string get_name() const {return name;}
+    int get_age() const {return age;}
     Person (string n, int a):name(n),age(a){}
+
+    virtual ~Person() {}
 
     void introduce(){
         cout<<"Hi i am "<<name<<" , "<<age<<" years old .\n";
@@ -23,8 +29,10 @@ class Student: public Person{
     string grade;
     vector<string>subjects;
     vector<double>marks;
+    
 
     public:
+    string get_grade() const {return grade;}
     Student(string n,int a,string g): Person (n,a),grade(g){}
     void study(){
         cout<<name<<" is studying Grade"<<grade<<".\n";
@@ -48,22 +56,6 @@ class Student: public Person{
         }
         cout<<"Average "<<get_average()<<"\n----------\n";
     }
-    void save_to_file() {
-        ofstream file("student.txt", ios::app);
-        if (!file){
-            cout<<"error opening file"<<endl;
-            return;
-        }
-        file<<name<<" , "<<age<<" , "<<grade<<endl;
-
-        for (size_t i=0;i<marks.size();++i){
-            file<<subjects[i]<<" -> "<<marks[i]<<endl;
-        }
-
-        file<<"average: "<<get_average()<<endl;
-        file.close();
-    }
-
 };
 class Teacher: public Person{
     private:
@@ -96,22 +88,37 @@ class Teacher: public Person{
         cout<<"average "<<class_average()<<endl;
     }
 };
+void save_all_students(const vector<Student*>&student_list) {
+        ofstream file("student.txt");
+        if (!file){
+            throw runtime_error("database is missing!");
+        }
+
+        for (auto student:student_list){
+            file<<student->get_name()<<","<<student->get_age()<<","<<student->get_grade()<<endl;
+    
+    }
+    cout<<"\n[system: database syncronised succesfully!]"<<endl;
+    file.close();
+}
 void load_students_from_files(){
     ifstream file("student.txt");
     if (!file){
-        cout<<"error opening file"<<endl;
-        return;
+        throw runtime_error("database file missing");
     }
     string line;
+    cout<<"\n-----reconstructed csv roster (industrial csv loaded)-----"<<endl;
+
     while (getline(file,line)){
+        if (line.empty())  continue;
         stringstream ss(line);
         string name,age_str,grade;
         getline(ss,name,',');
         getline(ss,age_str,',');
         getline(ss,grade,',');
-        if (!age_str.empty() && age_str.find_first_not_of("0123456789")==string::npos){
+        if (!age_str.empty()){
             int age=stoi(age_str);
-        cout<<"loaded "<<"("<<age<<")"<<" grade "<<grade<<endl;
+            cout<<"loaded "<<"("<<age<<")"<<" grade "<<grade<<endl;
         }
         else{
             cout<<"[skip the unseperable part: "<<line<<"]"<<endl;
@@ -128,14 +135,25 @@ int main(){
     s1.add_marks("maths",88);
     s2.add_marks("physics",90);
     s2.add_marks("maths",86);
+
+    s1.print_report();
     s2.print_report();
     t1.add_student(&s1);
     t1.add_student(&s2);
     t1.print_class();
-    s1.print_report();
-    s1.save_to_file();
-    s2.save_to_file();
-    load_students_from_files();
+    vector<Student*>roster={&s1, &s2};
     
+    try{
+        save_all_students(roster);
+        
+        load_students_from_files();
+    }
+    catch (const runtime_error& e){
+        cout<<"caught exception: "<<e.what()<<endl;
+        cout<<"system action creating a fresh new 'student.txt' database file"<<endl;
+    
+        ofstream new_file("student.txt");
+        new_file.close();
+    }
     return 0;
 }
