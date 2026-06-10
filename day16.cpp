@@ -30,6 +30,11 @@ double fast_power_fn(double n , double x ){
     }
     return n * half * half;
 }
+int product_using_addition(int a, int b){
+    if (a==0 || b==0) return 0;
+    int result= a+ product_using_addition(a,b-1);
+    return result;
+}
 int factorial(int n){
     if (n==0){
         return 1;
@@ -63,6 +68,8 @@ int main(){
     cout<<"power=   "<<power_fn(4.0,5.0)<<endl;
     cout<<factorial(5)<<endl;
     cout<<"fast power=  "<<fast_power_fn(6.0,7.0)<<endl;
+    cout<<"multiply=    "<<product_using_addition(6,9)<<endl;
+    cout<<"digit counter=   "<<coun
     for (int i=0;i<30;++i){
         cout<<fibonnaci(i)<<" ";
     }

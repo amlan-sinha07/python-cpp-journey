@@ -42,7 +42,12 @@ def factorial(n):
     print(f"factorial({n})={n}x factorial({n-1})")
     return n* factorial(n-1)
 print(factorial(5))
-
+def product_using_addition(a,b):
+    if a==0 or b==0:
+        return 0
+    result=a+product_using_addition(a,b-1)
+    return result
+print("multiply using addition= ",product_using_addition(9,6))
 def fibonnaci(n):
     if n==0:
         return 0
@@ -65,3 +70,14 @@ def fibonnaci(n,memo={}):
 print("\n")
 for i in range(25):
     print(fibonnaci(i),end=" ")
+def count_digits(n):
+    if n==0:
+        return 1
+    if n<0:
+        n=-n
+    while n>0:
+        count=0
+        n=n/10
+        count+=1
+    return count
+print("digit counter=   ",count_digits(9595959))
