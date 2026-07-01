@@ -69,7 +69,7 @@ int main(){
     cout<<factorial(5)<<endl;
     cout<<"fast power=  "<<fast_power_fn(6.0,7.0)<<endl;
     cout<<"multiply=    "<<product_using_addition(6,9)<<endl;
-    cout<<"digit counter=   "<<coun
+    cout<<"digit counter=   "<<countdown;
     for (int i=0;i<30;++i){
         cout<<fibonnaci(i)<<" ";
     }
